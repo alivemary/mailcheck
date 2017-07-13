@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-const levenshtein = require("js-levenshtein");
+import { checkFunctions } from "./helpers/checkFunctions";
 
 export default class MailInput extends React.Component {
   constructor(props) {
@@ -25,18 +25,12 @@ export default class MailInput extends React.Component {
   }
 
   checkDifference() {
-    let mailList = ["gmail.com", "yahoo.com"];
-    let indexOfNearest = 0;
-    let smallestDifferense = 1000;
-    mailList.forEach((mail, index) => {
-      let difference = levenshtein(this.state.value, mail);
-      console.log(difference);
-      if (difference < smallestDifferense) {
-        smallestDifferense = difference;
-        indexOfNearest = index;
-      }
-    });
-    return mailList[indexOfNearest];
+    let suggestion = "";
+    for (let activity of checkFunctions) {
+      suggestion = activity(this.state.value);
+      if (suggestion) return suggestion;
+    }
+    return suggestion;
   }
 
   render() {
